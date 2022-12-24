@@ -8,7 +8,6 @@ const List = ({ columns }) => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        list
         <Datatables columns={columns} />
       </div>
     </div>

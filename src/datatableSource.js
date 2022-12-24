@@ -3,7 +3,7 @@ export const userColumns = [
   {
     field: "user",
     headerName: "User",
-    width: 120,
+    width: 0,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
@@ -20,7 +20,6 @@ export const userColumns = [
       );
     },
   },
-  { field: "id", headerName: "ID", width: 70 },
   { field: "firstName", headerName: "First name", width: 130 },
   { field: "lastName", headerName: "Last name", width: 130 },
   {
@@ -37,5 +36,17 @@ export const userColumns = [
     width: 160,
     valueGetter: (params) =>
       `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 90,
+    renderCell: (params) => {
+      return (
+        <div className={`cellWithStatus ${params.row.status}`}>
+          {params.row.status}
+        </div>
+      );
+    },
   },
 ];

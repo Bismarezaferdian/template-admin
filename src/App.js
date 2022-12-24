@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.js";
 import List from "./pages/List/index.js";
 import { userColumns } from "./datatableSource";
+import { userInputs } from "./formSource.js";
+import New from "./pages/New/index.js";
 
 function App() {
   return (
@@ -16,7 +18,7 @@ function App() {
               {/* <Route path=":userId" element={<Single />} /> */}
               <Route
                 path="new"
-                // element={<New inputs={userInputs} title="Add New User" />}
+                element={<New inputs={userInputs} title="Add New User" />}
               />
             </Route>
             {/* <Route path="products">
