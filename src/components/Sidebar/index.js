@@ -18,7 +18,9 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <span className="logo">Your Logo</span>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <span className="logo">Your Logo</span>
+        </Link>
       </div>
       <hr />
       <div className="center">
@@ -81,7 +83,7 @@ const Sidebar = () => {
             <span>Logout</span>
           </li>
         </ul>
-        <div className="bottom">color option</div>
+        {/* <div className="bottom">color option</div> */}
       </div>
     </div>
   );
