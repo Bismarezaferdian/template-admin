@@ -13,8 +13,16 @@ import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import "./index.scss";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux.js/userRedux";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const handleClick = (e) => {
+    e.preventDefault();
+    dispatch(logout());
+  };
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -37,12 +45,12 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
-          {/* <Link to="/products" style={{ textDecoration: "none" }}> */}
-          <li>
-            <StoreIcon className="icon" />
-            <span>Products</span>
-          </li>
-          {/* </Link> */}
+          <Link to="/products" style={{ textDecoration: "none" }}>
+            <li>
+              <StoreIcon className="icon" />
+              <span>Products</span>
+            </li>
+          </Link>
           <li>
             <CreditCardIcon className="icon" />
             <span>Orders</span>
@@ -78,7 +86,7 @@ const Sidebar = () => {
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li>
+          <li onClick={handleClick}>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
           </li>

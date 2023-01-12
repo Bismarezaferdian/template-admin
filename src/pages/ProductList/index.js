@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import "../table.scss";
+import "../../components/table.scss";
 import { Link, useLocation } from "react-router-dom";
-import { fetchData } from "../../useFetch";
+// import { fetchData } from "../../useFetch";
+import { useDispatch } from "react-redux";
+import { getProduct } from "../../redux.js/apiCall";
 
 const rows = [
   { id: 1, lastName: "Snow", firstName: "Jon", age: 35, status: "pending" },
@@ -52,20 +54,18 @@ const rows = [
   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65, status: "pending" },
 ];
 
-const Datatables = ({ columns }) => {
+const ProductList = ({ columns }) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const res = await fetchData.get(`${path}`);
-  //     setData(res.data);
-  //   };
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    document.title = `admin ${path}`;
+  }, [path]);
 
-  // console.log(data);
+  useEffect(() => {
+    getProduct(dispatch);
+  }, [dispatch]);
 
   const actionColummn = {
     field: "action",
@@ -95,9 +95,10 @@ const Datatables = ({ columns }) => {
         pageSize={5}
         rowsPerPageOptions={[5]}
         checkboxSelection
+        getRowId={(row) => row._id}
       />
     </div>
   );
 };
 
-export default Datatables;
+export default ProductList;

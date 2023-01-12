@@ -1,5 +1,5 @@
 export const userColumns = [
-  { field: "id", headerName: "ID", width: 120 },
+  { field: "_id", headerName: "ID", type: "number", width: 40 },
   {
     field: "user",
     headerName: "User",
@@ -20,23 +20,41 @@ export const userColumns = [
       );
     },
   },
-  { field: "firstName", headerName: "First name", width: 130 },
-  { field: "lastName", headerName: "Last name", width: 130 },
+  { field: "firstname", type: "string", headerName: "First name", width: 130 },
+  { field: "lastname", type: "string", headerName: "Last name", width: 130 },
   {
-    field: "age",
-    headerName: "Age",
+    field: "email",
+    headerName: "Email",
+    type: "string",
+    width: 140,
+  },
+  {
+    field: "phonenumber",
+    headerName: "Phone Number",
     type: "number",
-    width: 90,
+    width: 140,
   },
   {
-    field: "fullName",
-    headerName: "Full name",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+    field: "address",
+    headerName: "Address",
+    type: "string",
+    width: 140,
   },
+  {
+    field: "isAdmin",
+    headerName: "Admin",
+    type: "string",
+    width: 140,
+  },
+  // {
+  //   field: "fullName",
+  //   headerName: "Full name",
+  //   description: "This column has a value getter and is not sortable.",
+  //   sortable: false,
+  //   width: 160,
+  //   valueGetter: (params) =>
+  //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  // },
   {
     field: "status",
     headerName: "Status",
@@ -49,4 +67,34 @@ export const userColumns = [
       );
     },
   },
+];
+
+export const productColumn = [
+  { field: "title", type: "string", headerName: "Title", width: 130 },
+  { field: "desc", type: "string", headerName: "Description", width: 130 },
+  // { field: "img", type: "string", headerName: "Description", width: 130 },
+  {
+    field: "img",
+    headerName: "Image",
+    width: 0,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img
+            className="cellImg"
+            src={
+              "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
+              // params.row.photo[0]
+            }
+            alt="avatar"
+          />
+          {params.row.userName}
+        </div>
+      );
+    },
+  },
+  { field: "categories", type: "array", headerName: "Categories", width: 130 },
+  { field: "size", type: "array", headerName: "Size", width: 130 },
+  { field: "color", type: "array", headerName: "Color", width: 130 },
+  { field: "price", type: "number", headerName: "Price", width: 130 },
 ];
