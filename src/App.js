@@ -1,16 +1,16 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.js";
-import List from "./pages/List/index.js";
-import { productColumn, userColumns } from "./datatableSource";
+import { orderColumns, productColumn, userColumns } from "./datatableSource";
 import { userInputs } from "./formSource.js";
 import New from "./pages/New/index.js";
 import Loginuser from "./pages/Login/index.jsx";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import User from "./pages/User/index.js";
 import Product from "./pages/Product/index.js";
+import Order from "./pages/OrderList/index.js";
 
 function App() {
+  console.log(orderColumns);
   const ProtectedRoute = ({ children }) => {
     const user = useSelector((state) => state.user.currentUser);
 
@@ -33,7 +33,7 @@ function App() {
             index
             element={
               <ProtectedRoute>
-                <Home columns={userColumns} />
+                <Home columns={orderColumns} />
               </ProtectedRoute>
             }
           />
@@ -63,6 +63,32 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Product columns={productColumn} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="new"
+              element={
+                <ProtectedRoute>
+                  <New inputs={userInputs} title="Add New User" />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="orders">
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <Order columns={orderColumns} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="new"
+              element={
+                <ProtectedRoute>
+                  <New inputs={userInputs} title="Add New User" />
                 </ProtectedRoute>
               }
             />

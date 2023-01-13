@@ -128,7 +128,7 @@ export const updateAllUser = async (dispatch, id) => {
 export const addAllUser = async (dispatch, AllUser) => {
   dispatch(addAllUserStart());
   try {
-    const res = await fetchData.post("/users", AllUser);
+    const res = await fetchData.post("/auth/register", AllUser);
     dispatch(addAllUserSuccess(res.data));
   } catch (error) {
     dispatch(addAllUserFailure());
@@ -140,8 +140,7 @@ export const addAllUser = async (dispatch, AllUser) => {
 export const getOrder = async (dispatch) => {
   dispatch(getOrderStart());
   try {
-    const res = await fetchData.get("/users");
-    // console.log(res.data);
+    const res = await fetchData.get("/orders");
     dispatch(getOrderSuccess(res.data));
   } catch (error) {
     dispatch(getOrderFailure());
@@ -151,7 +150,7 @@ export const getOrder = async (dispatch) => {
 export const deleteOrder = async (dispatch, id) => {
   dispatch(deleteOrderStart());
   try {
-    await fetchData.delete(`/users/${id}`);
+    await fetchData.delete(`/orders/delete/${id}`);
     dispatch(deleteOrderSuccess(id));
   } catch (error) {
     dispatch(deleteOrderFailure());
@@ -161,7 +160,7 @@ export const deleteOrder = async (dispatch, id) => {
 export const updateOrder = async (dispatch, id) => {
   dispatch(updateOrderStart());
   try {
-    await fetchData.delete(`/users/update/${id}`);
+    await fetchData.delete(`/orders/update/${id}`);
     dispatch(updateOrderSuccess(id));
   } catch (error) {
     dispatch(updateOrderFailure());
@@ -171,7 +170,7 @@ export const updateOrder = async (dispatch, id) => {
 export const addOrder = async (dispatch, Order) => {
   dispatch(addOrderStart());
   try {
-    const res = await fetchData.post("/users", Order);
+    const res = await fetchData.post("/orders", Order);
     dispatch(addOrderSuccess(res.data));
   } catch (error) {
     dispatch(addOrderFailure());

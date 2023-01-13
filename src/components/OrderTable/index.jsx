@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "../table.scss";
 import { Link, useLocation } from "react-router-dom";
 // import { fetchData } from "../../useFetch";
 import { useDispatch, useSelector } from "react-redux";
-import { getProduct } from "../../redux.js/apiCall";
+import { getOrder } from "../../redux.js/apiCall";
 
 const OrderTable = ({ columns }) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
   const dispatch = useDispatch();
-  const { products, isFetch, error } = useSelector((state) => state.product);
-  console.log(products, isFetch, error);
+  const { orders, isFetch, error } = useSelector((state) => state.order);
+  //   console.log(orders);
+  console.log(columns);
   useEffect(() => {
     document.title = `admin ${path}`;
   }, [path]);
 
   useEffect(() => {
-    getProduct(dispatch);
+    getOrder(dispatch);
   }, [dispatch]);
 
   const actionColummn = {
-    field: "action",
+    field: "actio",
     headerName: "Action",
     width: 140,
     renderCell: () => {
       return (
         <div className="cellAction">
-          <div className="viewButton">View</div>
+          <div className="viewButton">view</div>
           <div className="deleteButton">Delete</div>
         </div>
       );
@@ -43,7 +44,7 @@ const OrderTable = ({ columns }) => {
         </Link>
       </div>
       <DataGrid
-        rows={products}
+        rows={orders}
         columns={columns.concat(actionColummn)}
         pageSize={9}
         rowsPerPageOptions={[9]}

@@ -18,7 +18,7 @@ const orderSlice = createSlice({
       state.isFetch = false;
       state.error = false;
       state.orders = action.payload;
-      // console.log(state.Orders);
+      console.log(state.orders._id);
     },
     getOrderFailure: (state) => {
       state.isFetch = false;
@@ -49,7 +49,7 @@ const orderSlice = createSlice({
     updateOrderSuccess: (state, action) => {
       state.isFetch = false;
       state.error = false;
-      state.Orders[
+      state.orders[
         state.orders.findIndex((item) => item._id === action.payload.id)
       ] = action.payload.Order;
     },

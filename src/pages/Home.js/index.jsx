@@ -1,6 +1,6 @@
 import React from "react";
-import Datatables from "../../components/Datatables";
 import Navbar from "../../components/Navbar";
+import OrderTable from "../../components/OrderTable";
 import Sidebar from "../../components/Sidebar";
 import Widget from "../../components/Widget";
 import "./index.scss";
@@ -25,7 +25,7 @@ const Home = ({ columns }) => {
       </div> */}
         <div className="listContainer">
           <div className="listTitle">Latest Transactions</div>
-          <Datatables columns={columns} />
+          <OrderTable columns={columns} />
         </div>
       </div>
     </div>

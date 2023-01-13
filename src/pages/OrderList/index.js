@@ -1,19 +1,19 @@
 import React from "react";
-// import Datatables from "../../components/Datatables";
 import Navbar from "../../components/Navbar";
+import OrderTable from "../../components/OrderTable";
 import Sidebar from "../../components/Sidebar";
 import "../List/index.scss";
 
-const Product = ({ columns }) => {
+const Order = ({ columns }) => {
   return (
     <div className="list">
       <Sidebar />
       <div className="listContainer">
         <Navbar />
-        {/* <ProductTable columns={columns} /> */}
+        <OrderTable columns={columns} />
       </div>
     </div>
   );
 };
 
-export default Product;
+export default Order;

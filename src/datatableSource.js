@@ -98,3 +98,45 @@ export const productColumn = [
   { field: "color", type: "array", headerName: "Color", width: 130 },
   { field: "price", type: "number", headerName: "Price", width: 130 },
 ];
+
+export const orderColumns = [
+  { field: "_id", type: "string", headerName: "No Order", width: 220 },
+  { field: "userId", type: "string", headerName: "User Id ", width: 220 },
+
+  {
+    field: "products",
+    type: "string",
+    headerName: "Products Id",
+    width: 220,
+    valueGetter: (params) => {
+      return params.row.products.map((item) => item._id);
+
+      // return params.getValue(params.id, params.row);
+    },
+  },
+  {
+    field: "quantity",
+    type: "string",
+    headerName: "Qty Order",
+    width: 40,
+    valueGetter: (params) => {
+      return params.row.products.map((item) => item.quantity);
+
+      // return params.getValue(params.id, params.row);
+    },
+  },
+  { field: "amount", type: "number", headerName: "Total Payment", width: 130 },
+  // { field: "status", type: "string", headerName: "Status Order", width: 130 },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 80,
+    renderCell: (params) => {
+      return (
+        <div className={`cellWithStatus ${params.row.status}`}>
+          {params.row.status}
+        </div>
+      );
+    },
+  },
+];
