@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { revertAll } from "./action";
 
+const initialState = { products: [], isFetch: false, error: false };
 const productSlice = createSlice({
   name: "product",
-  initialState: {
-    products: [],
-    isFetch: false,
-    error: false,
-  },
+  initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
 
   reducers: {
     //getProduct

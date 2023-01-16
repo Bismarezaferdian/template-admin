@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { revertAll } from "./action";
 
+const initialState = {
+  allUsers: [],
+  isFetch: false,
+  error: false,
+};
 const allUserSlice = createSlice({
   name: "allUser",
-  initialState: {
-    allUsers: [],
-    isFetch: false,
-    error: false,
-  },
+  initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
 
   reducers: {
     //getProduct

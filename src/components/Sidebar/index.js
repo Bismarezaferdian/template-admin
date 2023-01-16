@@ -15,12 +15,14 @@ import "./index.scss";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux.js/userRedux";
+import { revertAll } from "../../redux.js/action";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const handleClick = (e) => {
     e.preventDefault();
     dispatch(logout());
+    dispatch(revertAll());
   };
 
   return (
