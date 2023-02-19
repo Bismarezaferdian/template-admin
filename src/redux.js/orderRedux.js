@@ -17,7 +17,6 @@ const orderSlice = createSlice({
       state.isFetch = false;
       state.error = false;
       state.orders = action.payload;
-      console.log(state.orders._id);
     },
     getOrderFailure: (state) => {
       state.isFetch = false;
@@ -31,7 +30,7 @@ const orderSlice = createSlice({
     deleteOrderSuccess: (state, action) => {
       state.isFetch = false;
       state.error = false;
-      state.orders.slice(
+      state.orders.splice(
         state.orders.findIndex((item) => item._id === action.payload.id),
         1
       );

@@ -38,7 +38,7 @@ const ProductTable = ({ columns }) => {
     <div className="datatable">
       <div className="datatableTitle">
         Add New Product
-        <Link to="/users/new" className="link">
+        <Link to="/products/newproduct" className="link">
           Add New{" "}
         </Link>
       </div>

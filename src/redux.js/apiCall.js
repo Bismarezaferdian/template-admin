@@ -43,6 +43,7 @@ import { loginFailure, loginStart, loginSuccess } from "./userRedux";
 
 //login
 export const login = async (dispatch, user) => {
+  console.log(user);
   dispatch(loginStart());
   try {
     const res = await fetchUser.post("/auth/login", user);

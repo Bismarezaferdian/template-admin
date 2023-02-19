@@ -1,13 +1,14 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.js";
 import { orderColumns, productColumn, userColumns } from "./datatableSource";
-import { userInputs } from "./formSource.js";
+import { productInput, userInputs } from "./formSource.js";
 import New from "./pages/New/index.js";
 import Loginuser from "./pages/Login/index.jsx";
 import { useSelector } from "react-redux";
 import User from "./pages/User/index.js";
 import Product from "./pages/Product/index.js";
 import Order from "./pages/OrderList/index.js";
+import NewProduct from "./pages/NewProduct/index.js";
 
 function App() {
   console.log(orderColumns);
@@ -67,10 +68,10 @@ function App() {
               }
             />
             <Route
-              path="new"
+              path="newproduct"
               element={
                 <ProtectedRoute>
-                  <New inputs={userInputs} title="Add New User" />
+                  <NewProduct inputs={productInput} title="Add New User" />
                 </ProtectedRoute>
               }
             />

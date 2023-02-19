@@ -23,3 +23,24 @@ export const userInputs = [
     placeholder: "USA",
   },
 ];
+
+export const productInput = [
+  {
+    id: "title",
+    label: "title",
+    type: "text",
+    placeholder: "Nike Air Jordan",
+  },
+  {
+    id: "price",
+    label: "price",
+    type: "number",
+    placeholder: "",
+  },
+  {
+    id: "stock",
+    label: "stock",
+    type: "number",
+    placeholder: "add qty stock",
+  },
+];
