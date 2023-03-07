@@ -11,7 +11,7 @@ const ProductTable = ({ columns }) => {
   const path = location.pathname.split("/")[1];
   const dispatch = useDispatch();
   const { products, isFetch, error } = useSelector((state) => state.product);
-  console.log(products, isFetch, error);
+  // console.log(products, isFetch, error);
   useEffect(() => {
     document.title = `admin ${path}`;
   }, [path]);

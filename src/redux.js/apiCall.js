@@ -46,7 +46,8 @@ export const login = async (dispatch, user) => {
   console.log(user);
   dispatch(loginStart());
   try {
-    const res = await fetchUser.post("/auth/login", user);
+    const res = await fetchData.post("/auth/login", user);
+    console.log(res);
     dispatch(loginSuccess(res.data));
   } catch (error) {
     dispatch(loginFailure(error));
@@ -88,6 +89,7 @@ export const addProduct = async (dispatch, product) => {
   dispatch(addProductStart());
   try {
     const res = await fetchData.post("/products", product);
+    console.log(res);
     dispatch(addProductSuccess(res.data));
   } catch (error) {
     dispatch(addProductFailure());

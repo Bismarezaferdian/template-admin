@@ -74,17 +74,18 @@ export const productColumn = [
   { field: "desc", type: "string", headerName: "Description", width: 130 },
   // { field: "img", type: "string", headerName: "Description", width: 130 },
   {
-    field: "img",
-    headerName: "Image",
+    field: "imgDisplay",
+    headerName: "Image Display",
     width: 0,
     renderCell: (params) => {
+      // console.log(params);
       return (
         <div className="cellWithImg">
           <img
             className="cellImg"
             src={
-              "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
-              // params.row.photo[0]
+              // "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
+              params.row.imgDisplay.imgUrl
             }
             alt="avatar"
           />
@@ -93,7 +94,36 @@ export const productColumn = [
       );
     },
   },
-  { field: "categories", type: "array", headerName: "Categories", width: 130 },
+  // {
+  //   field: "imgDetail",
+  //   headerName: "Image Detail",
+  //   width: 400,
+  //   renderCell: (params) => {
+  //     console.log(params);
+  //     return params.row.imgDetail.map((item) => (
+  //       <div className="cellWithImg">
+  //         <img
+  //           className="cellImg"
+  //           src={
+  //             // "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
+  //             item.imgUrl
+  //           }
+  //           alt="avatar"
+  //         />
+  //         {params.row.userName}
+  //       </div>
+  //     ));
+  //   },
+  // },
+  {
+    field: "categories",
+    type: "array",
+    headerName: "Categories",
+    width: 130,
+    valueGetter: (params) => {
+      return params.row.categories?.map((item) => item.name);
+    },
+  },
   { field: "size", type: "array", headerName: "Size", width: 130 },
   { field: "color", type: "array", headerName: "Color", width: 130 },
   { field: "price", type: "number", headerName: "Price", width: 130 },
@@ -109,6 +139,7 @@ export const orderColumns = [
     headerName: "Products Id",
     width: 220,
     valueGetter: (params) => {
+      // console.log(params);
       return params.row.products.map((item) => item._id);
 
       // return params.getValue(params.id, params.row);

@@ -2,27 +2,36 @@ import React, { useEffect, useState } from "react";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
+import { useNavigate } from "react-router-dom";
 import "./index.scss";
 import { fetchData } from "../../useFetch";
 import { useLocation } from "react-router-dom";
-import { color } from "@mui/system";
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct } from "../../redux.js/apiCall";
 
 function NewProduct({ inputs, title }) {
   const location = useLocation();
-  const [file, setFile] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { products, isFetch, error } = useSelector((state) => state.product);
+
+  const [imgDetail, setImgDetail] = useState([]);
+  const [imgDisplay, setImgDisplay] = useState("");
+  console.log(imgDetail);
+  console.log(imgDisplay);
   //send data base
   const [dataProduct, setDataProduct] = useState({});
   const [categories, setCategories] = useState([]);
   //send databse
   const [dataCat, setDataCat] = useState([]);
-  // const [newColor, setNewColor] = useState("");
-  // const [newSize, setNewSize] = useState("");
   const [newData, setNewData] = useState("");
   //send database
   const [data, setData] = useState({
     color: ["red", "blue"],
     size: [],
   });
+
+  // console.log(dataProduct);
   const lowerCase = (string) => {
     return string.toLowerCase();
   };
@@ -81,6 +90,47 @@ function NewProduct({ inputs, title }) {
     setData(datas);
   };
 
+  console.log(dataCat);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { title, description, stock, price } = dataProduct;
+
+    // const datas = {
+    //   title: title,
+    //   desc: description,
+    //   imgDisplay: imgDisplay,
+    //   imgDetail: imgDetail,
+    //   categories: dataCat,
+    //   size: data.size,
+    //   color: data.color,
+    //   stock: stock,
+    //   price: price,
+    // };
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("desc", description);
+    formData.append("imgDisplay", imgDisplay);
+    for (let i = 0; i < imgDetail.length; i++) {
+      formData.append("imgDetail", imgDetail[i].file);
+    }
+    formData.append("categories", dataCat);
+    formData.append("size", data.size);
+    formData.append("color", data.color);
+    formData.append("stock", stock);
+    formData.append("price", price);
+    // formData.append("title", "title");
+
+    addProduct(dispatch, formData);
+    if (isFetch === false) {
+      alert("succes add product");
+      navigate("/products");
+    } else if (error) {
+      alert("failed add product");
+    }
+  };
+
   //old version
 
   //   const addSize = (e) => {
@@ -121,28 +171,17 @@ function NewProduct({ inputs, title }) {
         </div>
         <div className="bottom">
           <div className="left">
-            <img
+            {/* <img
               src={
                 file
                   ? URL.createObjectURL(file)
                   : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
               }
               alt=""
-            />
+            /> */}
           </div>
           <div className="right">
-            <form>
-              <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  style={{ display: "none" }}
-                />
-              </div>
+            <form encType="multipart/form-data">
               {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
@@ -154,6 +193,57 @@ function NewProduct({ inputs, title }) {
                   />
                 </div>
               ))}
+
+              <div className="formInput">
+                <label htmlFor="file">
+                  Image Display:{" "}
+                  <DriveFolderUploadOutlinedIcon className="icon" />
+                </label>
+                <input
+                  type="file"
+                  id="file"
+                  onChange={(e) => setImgDisplay(e.target.files[0])}
+                  style={{ display: "none" }}
+                />
+                {imgDisplay && (
+                  <img
+                    src={
+                      imgDisplay
+                        ? URL.createObjectURL(imgDisplay)
+                        : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                    }
+                    alt=""
+                  />
+                )}
+              </div>
+              <div className="formInput">
+                <label htmlFor="files">
+                  Image Detail:{" "}
+                  <DriveFolderUploadOutlinedIcon className="icon" />
+                </label>
+                <input
+                  type="file"
+                  id="files"
+                  multiple
+                  accept=".jpg,image/*,.png,.jpeg"
+                  // onChange={(e) => console.log(e.target.files)}
+                  onChange={(e) => setImgDetail(e.target.files)}
+                  style={{ display: "none" }}
+                />
+                {imgDetail &&
+                  Array.from(imgDetail).map((item, index) => (
+                    <img
+                      key={index}
+                      src={
+                        item
+                          ? URL.createObjectURL(item)
+                          : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                      }
+                      alt=""
+                    />
+                  ))}
+              </div>
+
               <div className="formInput1">
                 <label>Desc</label>
                 <textarea
@@ -237,20 +327,20 @@ function NewProduct({ inputs, title }) {
                 <label>Pilih Categorie :</label>
                 <div className="checkbox">
                   {categories.map((cat, i) => (
-                    <label>
+                    <label key={i}>
                       <input
                         type="checkbox"
-                        key={i}
-                        value={cat.name}
+                        // key={i}
+                        value={cat._id}
                         onChange={handleSelect}
-                        checked={dataCat.includes(cat.name)}
+                        checked={dataCat.includes(cat._id)}
                       />
                       {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
                     </label>
                   ))}
                 </div>
               </div>
-              <button>Send</button>
+              <button onClick={(e) => handleSubmit(e)}>Send</button>
             </form>
           </div>
         </div>
