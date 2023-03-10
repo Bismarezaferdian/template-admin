@@ -60,6 +60,7 @@ const productSlice = createSlice({
       state.error = false;
       state.isFetch = true;
     },
+
     addProductSuccess: (state, action) => {
       state.isFetch = false;
       state.error = false;

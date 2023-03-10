@@ -5,13 +5,13 @@ import { Link, useLocation } from "react-router-dom";
 // import { fetchData } from "../../useFetch";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUser, getProduct } from "../../redux.js/apiCall";
+import { ToastContainer } from "react-toastify";
 
 const ProductTable = ({ columns }) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
   const dispatch = useDispatch();
   const { products, isFetch, error } = useSelector((state) => state.product);
-  // console.log(products, isFetch, error);
   useEffect(() => {
     document.title = `admin ${path}`;
   }, [path]);
@@ -36,6 +36,7 @@ const ProductTable = ({ columns }) => {
 
   return (
     <div className="datatable">
+      <ToastContainer />
       <div className="datatableTitle">
         Add New Product
         <Link to="/products/newproduct" className="link">

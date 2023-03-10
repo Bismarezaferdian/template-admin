@@ -8,28 +8,30 @@ import { fetchData } from "../../useFetch";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "../../redux.js/apiCall";
+import { errorMessage, successMessage } from "../../utils/Toastify";
+import { ToastContainer } from "react-toastify";
 
 function NewProduct({ inputs, title }) {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products, isFetch, error } = useSelector((state) => state.product);
-
+  const { isFetch } = useSelector((state) => state.product);
+  console.log(isFetch);
   const [imgDetail, setImgDetail] = useState([]);
   const [imgDisplay, setImgDisplay] = useState("");
-  console.log(imgDetail);
-  console.log(imgDisplay);
   //send data base
   const [dataProduct, setDataProduct] = useState({});
   const [categories, setCategories] = useState([]);
   //send databse
   const [dataCat, setDataCat] = useState([]);
+  console.log(dataCat);
   const [newData, setNewData] = useState("");
   //send database
   const [data, setData] = useState({
-    color: ["red", "blue"],
+    color: [],
     size: [],
   });
+  const [validate, setValidate] = useState(false);
 
   // console.log(dataProduct);
   const lowerCase = (string) => {
@@ -90,12 +92,27 @@ function NewProduct({ inputs, title }) {
     setData(datas);
   };
 
-  console.log(dataCat);
+  const runValidate = () => {
+    setValidate(true);
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, description, stock, price } = dataProduct;
 
+    const { title, description, stock, price } = dataProduct;
+    if (
+      !title ||
+      !description ||
+      !stock ||
+      !price ||
+      !imgDisplay ||
+      !imgDetail.length ||
+      !data.size.length ||
+      !data.color.length
+    ) {
+      runValidate();
+    }
+    // console.log(title, description, stock, price);
     // const datas = {
     //   title: title,
     //   desc: description,
@@ -113,7 +130,7 @@ function NewProduct({ inputs, title }) {
     formData.append("desc", description);
     formData.append("imgDisplay", imgDisplay);
     for (let i = 0; i < imgDetail.length; i++) {
-      formData.append("imgDetail", imgDetail[i].file);
+      formData.append("imgDetail", imgDetail[i]);
     }
     formData.append("categories", dataCat);
     formData.append("size", data.size);
@@ -122,13 +139,13 @@ function NewProduct({ inputs, title }) {
     formData.append("price", price);
     // formData.append("title", "title");
 
-    addProduct(dispatch, formData);
-    if (isFetch === false) {
-      alert("succes add product");
-      navigate("/products");
-    } else if (error) {
-      alert("failed add product");
-    }
+    await addProduct(
+      dispatch,
+      formData,
+      navigate,
+      successMessage,
+      errorMessage
+    );
   };
 
   //old version
@@ -163,6 +180,7 @@ function NewProduct({ inputs, title }) {
   //HANDLE IMAGE
   return (
     <div className="new">
+      <ToastContainer />
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -190,7 +208,11 @@ function NewProduct({ inputs, title }) {
                     type={input.type}
                     onChange={handleChange}
                     placeholder={input.placeholder}
+                    required
                   />
+                  {!dataProduct[input.id] && validate && (
+                    <span>tidak boleh kosong </span>
+                  )}
                 </div>
               ))}
 
@@ -205,6 +227,7 @@ function NewProduct({ inputs, title }) {
                   onChange={(e) => setImgDisplay(e.target.files[0])}
                   style={{ display: "none" }}
                 />
+                {!imgDisplay && validate && <span>tidak boleh kosong </span>}
                 {imgDisplay && (
                   <img
                     src={
@@ -230,6 +253,9 @@ function NewProduct({ inputs, title }) {
                   onChange={(e) => setImgDetail(e.target.files)}
                   style={{ display: "none" }}
                 />
+                {!imgDetail.length && validate && (
+                  <span>tidak boleh kosong </span>
+                )}
                 {imgDetail &&
                   Array.from(imgDetail).map((item, index) => (
                     <img
@@ -253,6 +279,9 @@ function NewProduct({ inputs, title }) {
                   value={setDataProduct.description}
                   onChange={(e) => handleChange(e)}
                 />
+                {!dataProduct.description && validate && (
+                  <span>tidak boleh kosong </span>
+                )}
               </div>
 
               {/* size */}
@@ -286,6 +315,9 @@ function NewProduct({ inputs, title }) {
                     Add
                   </div>
                 </div>
+                {!data.size.length && validate && (
+                  <span>size belum ditambahkan </span>
+                )}
               </div>
 
               {/* color */}
@@ -319,6 +351,9 @@ function NewProduct({ inputs, title }) {
                     Add
                   </div>
                 </div>
+                {!data.color.length && validate && (
+                  <span>color belum ditambahkan </span>
+                )}
               </div>
 
               {/* categorie */}
@@ -339,8 +374,13 @@ function NewProduct({ inputs, title }) {
                     </label>
                   ))}
                 </div>
+                {!dataCat.length && validate && (
+                  <span>categorie belum di pilih </span>
+                )}
               </div>
-              <button onClick={(e) => handleSubmit(e)}>Send</button>
+              <button disabled={isFetch} onClick={(e) => handleSubmit(e)}>
+                Send
+              </button>
             </form>
           </div>
         </div>

@@ -85,14 +85,22 @@ export const updateProduct = async (dispatch, id) => {
   }
 };
 
-export const addProduct = async (dispatch, product) => {
+export const addProduct = async (
+  dispatch,
+  product,
+  navigate,
+  successMessage,
+  errorMassage
+) => {
   dispatch(addProductStart());
   try {
     const res = await fetchData.post("/products", product);
-    console.log(res);
     dispatch(addProductSuccess(res.data));
+    navigate("/products");
+    successMessage("succes add product !");
   } catch (error) {
     dispatch(addProductFailure());
+    errorMassage("failed add product !");
   }
 };
 

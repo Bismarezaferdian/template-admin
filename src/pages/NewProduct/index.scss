@@ -60,6 +60,11 @@
               border-bottom: 1px solid gray;
             }
 
+            span {
+              color: red;
+              font-size: 10px;
+            }
+
             img {
               width: 100px;
               height: 100px;
@@ -76,6 +81,10 @@
               display: flex;
               align-items: center;
               gap: 10px;
+            }
+            span {
+              color: red;
+              font-size: 10px;
             }
 
             .checkbox {
@@ -127,6 +136,10 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
+
+            &:disabled {
+              background-color: grey;
+            }
           }
         }
       }
