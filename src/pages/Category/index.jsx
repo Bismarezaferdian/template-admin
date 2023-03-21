@@ -1,22 +1,22 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
+import CategoryTable from "../../components/CategoryTable";
 // import Datatables from "../../components/Datatables";
 import Navbar from "../../components/Navbar";
-import ProductTable from "../../components/ProductTable";
 import Sidebar from "../../components/Sidebar";
 import "../List/index.scss";
 
-const Product = ({ columns }) => {
+const Category = () => {
   return (
     <div className="list">
       <Sidebar />
       <div className="listContainer">
         <Navbar />
         <ToastContainer />
-        <ProductTable columns={columns} />
+        <CategoryTable />
       </div>
     </div>
   );
 };
 
-export default Product;
+export default Category;

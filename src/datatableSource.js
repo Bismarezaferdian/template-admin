@@ -85,7 +85,7 @@ export const productColumn = [
             className="cellImg"
             src={
               // "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
-              params.row.imgDisplay.imgUrl
+              params.row.imgDisplay?.imgUrl
             }
             alt="avatar"
           />

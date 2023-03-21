@@ -35,7 +35,7 @@ const allUserSlice = createSlice({
     deleteAllUserSuccess: (state, action) => {
       state.isFetch = false;
       state.error = false;
-      state.allUsers.slice(
+      state.allUsers.splice(
         state.allUsers.findIndex((item) => item._id === action.payload.id),
         1
       );

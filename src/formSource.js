@@ -1,26 +1,44 @@
 export const userInputs = [
   {
     id: 1,
-    label: "Username",
+    label: "firsname",
     type: "text",
-    placeholder: "john_doe",
+    placeholder: "jhon",
   },
   {
     id: 2,
-    label: "Email",
-    type: "mail",
-    placeholder: "john_doe@gmail.com",
+    label: "lastname",
+    type: "text",
+    placeholder: "doe",
   },
   {
     id: 3,
-    label: "Password",
-    type: "password",
+    label: "phoneNumber",
+    type: "+62",
   },
   {
     id: 7,
-    label: "Is Admin",
+    label: "address",
+    type: "text",
+    placeholder: "jakarta",
+  },
+  {
+    id: 8,
+    label: "image",
+    type: "text ",
+    placeholder: "jakarta",
+  },
+  {
+    id: 9,
+    label: "email",
+    type: "email",
+    placeholder: "jhon_dio@gmail.com",
+  },
+  {
+    id: 10,
+    label: "isAdmin",
     type: "bolean",
-    placeholder: "USA",
+    // placeholder: "jhon_dio@gmail.com",
   },
 ];
 
@@ -35,7 +53,7 @@ export const productInput = [
     id: "price",
     label: "price",
     type: "number",
-    placeholder: "",
+    placeholder: "price",
   },
   {
     id: "stock",

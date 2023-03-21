@@ -4,6 +4,7 @@ import userReducer from "./userRedux";
 import allUserReducer from "./allUserRedux";
 import productReducer from "./productRedux";
 import orderReducer from "./orderRedux";
+import categoriesReducer from "./category";
 import {
   persistStore,
   persistReducer,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   allUser: allUserReducer,
   product: productReducer,
   order: orderReducer,
+  categorie: categoriesReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

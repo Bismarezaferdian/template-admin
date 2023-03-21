@@ -6,7 +6,12 @@ const BASE_URL = "http://localhost:3000/api/v1";
 const token = Cookies.get("token") || null;
 // console.log(token);
 
-export const fetchData = axios.create({ baseURL: BASE_URL });
+export const fetchData = axios.create({
+  baseURL: BASE_URL,
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
+});
 
 export const fetchUser = axios.create({
   baseURL: BASE_URL,

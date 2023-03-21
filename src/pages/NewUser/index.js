@@ -4,7 +4,7 @@ import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
 
-const New = ({ inputs, title }) => {
+const NewUser = ({ inputs, title }) => {
   const [file, setFile] = useState("");
 
   return (
@@ -55,4 +55,4 @@ const New = ({ inputs, title }) => {
   );
 };
 
-export default New;
+export default NewUser;

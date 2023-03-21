@@ -2,41 +2,76 @@ import React, { useEffect, useState } from "react";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./index.scss";
 import { fetchData } from "../../useFetch";
-import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../../redux.js/apiCall";
+import { addProduct, updateProduct } from "../../redux.js/apiCall";
 import { errorMessage, successMessage } from "../../utils/Toastify";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
-function NewProduct({ inputs, title }) {
+function UpdateProduct({ inputs, title }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const product = location.state;
   const dispatch = useDispatch();
-  const { isFetch } = useSelector((state) => state.product);
-  console.log(isFetch);
+  const { products, isFetch } = useSelector((state) => state.product);
+  // const [productUpdate, setProductUpdate] = useState(undefined);
+  // console.log(productUpdate);
+  //LOCAL STATE
   const [imgDetail, setImgDetail] = useState([]);
   const [imgDisplay, setImgDisplay] = useState("");
   //send data base
-  const [dataProduct, setDataProduct] = useState({});
+  const [dataProduct, setDataProduct] = useState({
+    title: "",
+    price: "",
+    stock: "",
+    description: "",
+  });
+
   const [categories, setCategories] = useState([]);
   //send databse
   const [dataCat, setDataCat] = useState([]);
-  console.log(dataCat);
+  // console.log(dataProduct);
   const [newData, setNewData] = useState("");
   //send database
   const [data, setData] = useState({
-    color: [],
+    color: ["red"],
     size: [],
   });
+  const [id, setId] = useState();
+
   const [validate, setValidate] = useState(false);
 
   // console.log(dataProduct);
   const lowerCase = (string) => {
     return string.toLowerCase();
   };
+  console.log(product);
+  useEffect(() => {
+    if (product?.id) {
+      const prod = products.find((products) => products._id === product.id);
+      setId(prod._id);
+      // setProductUpdate(prod);
+      setData((prev) => ({
+        ...prev,
+        size: [...prod.size],
+        color: [...prod.color],
+      }));
+      // setImgDetail((prev) => [...prev, prod.imgDetail]);
+
+      const checked = [];
+      prod?.categories?.map((item) => checked.push(item._id));
+      setDataCat(checked);
+      setDataProduct((prev) => ({
+        ...prev,
+        title: prod.title,
+        price: prod.price,
+        stock: prod.stock,
+        description: prod.desc,
+      }));
+    }
+  }, [product?.id, products]);
 
   useEffect(() => {
     const getCat = async () => {
@@ -96,7 +131,7 @@ function NewProduct({ inputs, title }) {
     setValidate(true);
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
     const { title, description, stock, price } = dataProduct;
@@ -105,82 +140,35 @@ function NewProduct({ inputs, title }) {
       !description ||
       !stock ||
       !price ||
-      !imgDisplay ||
-      !imgDetail.length ||
       !data.size.length ||
       !data.color.length
     ) {
       runValidate();
     }
-    // console.log(title, description, stock, price);
-    // const datas = {
-    //   title: title,
-    //   desc: description,
-    //   imgDisplay: imgDisplay,
-    //   imgDetail: imgDetail,
-    //   categories: dataCat,
-    //   size: data.size,
-    //   color: data.color,
-    //   stock: stock,
-    //   price: price,
-    // };
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("desc", description);
-    formData.append("imgDisplay", imgDisplay);
-    for (let i = 0; i < imgDetail.length; i++) {
-      formData.append("imgDetail", imgDetail[i]);
+    if (imgDetail) {
+      for (let i = 0; i < imgDetail.length; i++) {
+        formData.append("imgDetail", imgDetail[i]);
+      }
+    }
+    if (imgDisplay) {
+      formData.append("imgDisplay", imgDisplay);
     }
     formData.append("categories", dataCat);
-    formData.append("size", data.size);
-    formData.append("color", data.color);
+    formData.append("size", JSON.stringify(data.size));
+    formData.append("color", JSON.stringify(data.color));
     formData.append("stock", stock);
     formData.append("price", price);
-    // formData.append("title", "title");
 
-    await addProduct(
-      dispatch,
-      formData,
-      navigate,
-      successMessage,
-      errorMessage
-    );
+    await updateProduct(dispatch, id, formData, navigate, toast, errorMessage);
   };
 
-  //old version
-
-  //   const addSize = (e) => {
-  //     console.log(e.target.getAttribute("name"));
-
-  //     e.preventDefault();
-  //     size.includes(newSize) ? setSize(size) : setSize([...size, newSize]);
-  //     setNewSize("");
-  //   };
-  //   const addColor = (e) => {
-  //     e.preventDefault();
-  //     color.includes(newColor) ? setColor(color) : setColor([...color, newColor]);
-  //     setNewColor("");
-  //   };
-
-  //   const handleDeleteSize = (i) => {
-  //     const newSize = [...size];
-  //     newSize.splice(i, 1);
-  //     setSize(newSize);
-  //   };
-  //   const handleDeleteColor = (i) => {
-  //     console.log("delete");
-  //     const newColor = [...color];
-  //     newColor.splice(i, 1);
-  //     setColor(newColor);
-  //   };
-  //   console.log(`color :${color} `);
-  //   console.log(`newColor :${newColor} `);
-
-  //HANDLE IMAGE
   return (
     <div className="new">
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -207,8 +195,11 @@ function NewProduct({ inputs, title }) {
                     id={input.id}
                     type={input.type}
                     onChange={handleChange}
-                    placeholder={input.placeholder}
-                    required
+                    value={dataProduct[input.id]}
+                    // placeholder={
+                    //   (productUpdate && productUpdate[input.id]) ||
+                    //   input.placeholder
+                    // }
                   />
                   {!dataProduct[input.id] && validate && (
                     <span>tidak boleh kosong </span>
@@ -227,7 +218,7 @@ function NewProduct({ inputs, title }) {
                   onChange={(e) => setImgDisplay(e.target.files[0])}
                   style={{ display: "none" }}
                 />
-                {!imgDisplay && validate && <span>tidak boleh kosong </span>}
+                {/* {!imgDisplay && validate && <span>tidak boleh kosong </span>} */}
                 {imgDisplay && (
                   <img
                     src={
@@ -253,9 +244,9 @@ function NewProduct({ inputs, title }) {
                   onChange={(e) => setImgDetail(e.target.files)}
                   style={{ display: "none" }}
                 />
-                {!imgDetail.length && validate && (
+                {/* {!imgDetail.length && validate && (
                   <span>tidak boleh kosong </span>
-                )}
+                )} */}
                 {imgDetail &&
                   Array.from(imgDetail).map((item, index) => (
                     <img
@@ -276,7 +267,7 @@ function NewProduct({ inputs, title }) {
                   rows="4"
                   cols="80"
                   id="description"
-                  value={setDataProduct.description}
+                  value={dataProduct.description}
                   onChange={(e) => handleChange(e)}
                 />
                 {!dataProduct.description && validate && (
@@ -378,8 +369,8 @@ function NewProduct({ inputs, title }) {
                   <span>categorie belum di pilih </span>
                 )}
               </div>
-              <button disabled={isFetch} onClick={(e) => handleSubmit(e)}>
-                Send
+              <button disabled={isFetch} onClick={(e) => handleUpdate(e)}>
+                Update
               </button>
             </form>
           </div>
@@ -389,4 +380,4 @@ function NewProduct({ inputs, title }) {
   );
 }
 
-export default NewProduct;
+export default UpdateProduct;

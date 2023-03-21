@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 
-export const successMessage = () => {
+export const successMessage = (message) => {
   // window.alert("Invalid Credentials");
-  toast.success("success add hotel !", {
+  toast.success(message, {
     position: "top-right",
     autoClose: 2000,
     hideProgressBar: false,
