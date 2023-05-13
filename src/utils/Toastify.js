@@ -26,3 +26,17 @@ export const errorMessage = (message) => {
     theme: "colored",
   });
 };
+
+export const infoMessage = (message) => {
+  // window.alert("Invalid Credentials");
+  toast.info(message, {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });
+};

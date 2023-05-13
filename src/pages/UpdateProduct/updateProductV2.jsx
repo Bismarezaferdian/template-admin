@@ -13,6 +13,18 @@ import {
   successMessage,
 } from "../../utils/Toastify";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 function UpdateProduct({ inputs, title }) {
   const location = useLocation();
@@ -47,6 +59,13 @@ function UpdateProduct({ inputs, title }) {
     color: {},
     size: {},
   });
+  const [tempVariant, setTempVariant] = useState({
+    color: "",
+    size: "",
+    stock: "",
+  });
+  const [variant, setVariant] = useState([]);
+
   const [newColor, setNewColor] = useState([]);
   const [newSize, setNewSize] = useState([]);
   const [id, setId] = useState();
@@ -57,33 +76,6 @@ function UpdateProduct({ inputs, title }) {
     return string.toLowerCase();
   };
 
-  // useEffect(() => {
-  //   if (product?.id) {
-  //     const prod = products.find((products) => products._id === product.id);
-  //     setId(prod._id);
-  //     console.log(prod);
-  //     // setProductUpdate(prod);
-  //     // setTempValue((prev) => ({
-  //     //   ...prev,
-  //     //   size: [...prod.size],
-  //     //   color: [...prod.color],
-  //     // }));
-  //     setNewColor(prod.color);
-  //     setNewSize(prod.size);
-  //     // setImgDetail((prev) => [...prev, prod.imgDetail]);
-
-  //     const checked = [];
-  //     prod?.categories?.map((item) => checked.push(item._id));
-  //     setDataCat(checked);
-  //     setDataProduct((prev) => ({
-  //       ...prev,
-  //       title: prod.title,
-  //       price: prod.price,
-  //       stock: prod.stock,
-  //       description: prod.desc,
-  //     }));
-  //   }
-  // }, [product?.id, products]);
   useEffect(() => {
     const prod = products.find((item) => item._id === product?.id);
     if (prod) {
@@ -287,7 +279,6 @@ function UpdateProduct({ inputs, title }) {
                   )}
                 </div>
               ))}
-
               <div className="formInput">
                 <label htmlFor="file">
                   Image Display:{" "}
@@ -341,216 +332,122 @@ function UpdateProduct({ inputs, title }) {
                     />
                   ))}
               </div>
-
               <div className="formInput1">
-                <label>Deskripsi</label>
+                <label>Desc</label>
                 <textarea
                   rows="4"
                   cols="80"
                   id="description"
-                  value={dataProduct.description}
+                  // value={dataProduct.description}
                   onChange={(e) => handleChange(e)}
                 />
                 {!dataProduct.description && validate && (
                   <span>tidak boleh kosong </span>
                 )}
               </div>
-
-              {/* color with stock */}
-              <div className="formInput1">
-                <label>Color :</label>
-                {newColor.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.name}</p>
-                    <p>{item.stock}</p>
-                    <div
-                      name="color"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div
-                  className="inputWrapp"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <input
-                    id="color"
-                    name="name"
-                    type="text"
-                    value={tempValue.color.name || ""}
-                    placeholder="color"
-                    onChange={(e) => handleValueChange(e)}
-                  />
-                  <input
-                    style={{ marginTop: "10px" }}
-                    placeholder="stock"
-                    id="color"
-                    name="stock"
-                    type="text"
-                    value={tempValue.color.stock || ""}
-                    onChange={(e) => handleValueChange(e)}
-                  />
-                  <div
-                    id="color"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                    style={{
-                      marginTop: "10px",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                    }}
+              {/* <div>
+                <Accordion sx={{ width: "400px" }}>
+                  <AccordionSummary
+                    expandIcon={<GridExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
-                    Add
-                  </div>
-                </div>
-                {!tempValue.color.length && validate && (
-                  <span>color belum ditambahkan </span>
-                )}
-              </div>
-
-              {/* size with stock */}
-              <div className="formInput1">
-                <label>Size :</label>
-                {newSize.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.name}</p>
-                    <p>{item.stock}</p>
-                    <div
-                      name="size"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
+                    <Typography>Add Variants</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div>
+                      <Table aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Color</TableCell>
+                            <TableCell>Size</TableCell>
+                            <TableCell>Stock</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {variant?.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              // sx={{
+                              //   "&:last-child td, &:last-child th": {
+                              //     border: 1,
+                              //   },
+                              // }}
+                            >
+                              <TableCell>{item.color}</TableCell>
+                              <TableCell>{item.size}</TableCell>
+                              <TableCell>{item.stock}</TableCell>
+                              <TableCell>
+                                <div
+                                  name="color"
+                                  className="btn"
+                                  onClick={() => handleDelete(i)}
+                                >
+                                  cancel
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
-                  </div>
-                ))}
-                <div
-                  className="inputWrapp"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <input
-                    id="size"
-                    name="name"
-                    type="text"
-                    value={tempValue.size.name || ""}
-                    placeholder="size"
-                    onChange={(e) => handleValueChange(e)}
-                  />
-                  <input
-                    style={{ marginTop: "10px" }}
-                    placeholder="stock"
-                    id="size"
-                    name="stock"
-                    type="text"
-                    value={tempValue.size.stock || ""}
-                    onChange={(e) => handleValueChange(e)}
-                  />
-                  <div
-                    id="size"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                    style={{
-                      marginTop: "10px",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!tempValue.color.length && validate && (
-                  <span>color belum ditambahkan </span>
-                )}
-              </div>
+                    {Object.keys(tempVariant).map((item, i) => (
+                      <div className="formInput1" key={i}>
+                        <label>{item} :</label>
 
-              {/* size */}
-              {/* <div className="formInput1">
-                <label>Size :</label>
-                {data.size?.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
+                        <div
+                          className="inputWrapp"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <input
+                            id={item}
+                            name={item}
+                            type="text"
+                            value={tempVariant[item] || ""}
+                            placeholder={item}
+                            onChange={(e) => handleValueChange(e)}
+                          />
+                        </div>
+                        {!variant.length && validate && (
+                          <span>{item} belum ditambahkan </span>
+                        )}
+                      </div>
+                    ))}
+
                     <div
-                      name="size"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
+                      className="inputWrapp"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                      }}
                     >
-                      cancel
+                      <div
+                        id="size"
+                        className="buttonColor"
+                        onClick={(e) => handleAdd(e)}
+                        style={{
+                          marginTop: "10px",
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        Add
+                      </div>
                     </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="size"
-                    type="text"
-                    value={newData.size || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewSize(e.target.value)}
-                  />
-                  <div
-                    name="size"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!data.size.length && validate && (
-                  <span>size belum ditambahkan </span>
+                  </AccordionDetails>
+                </Accordion>
+                {!variant.length && validate && (
+                  <span>variant belum ditambahkan </span>
                 )}
               </div> */}
-
-              {/* color */}
-              {/* <div className="formInput1">
-                <label>Color :</label>
-                {data.color?.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
-                    <div
-                      name="color"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="color"
-                    type="text"
-                    value={newData.color || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewColor(e.target.value)}
-                  />
-                  <div
-                    name="color"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!data.color.length && validate && (
-                  <span>color belum ditambahkan </span>
-                )}
-              </div> */}
-
-              {/* categorie */}
               <div className="formInput1">
                 <div className="categorieWrapp"></div>
                 <label>Pilih Categorie :</label>
@@ -573,8 +470,9 @@ function UpdateProduct({ inputs, title }) {
                 )}
               </div>
               <button disabled={isFetch} onClick={(e) => handleUpdate(e)}>
-                Update
+                Update test
               </button>
+              tets
             </form>
           </div>
         </div>

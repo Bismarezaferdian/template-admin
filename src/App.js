@@ -10,11 +10,12 @@ import Product from "./pages/Product/index.js";
 import Order from "./pages/OrderList/index.js";
 import NewProduct from "./pages/NewProduct/index.jsx";
 import UpdateProduct from "./pages/UpdateProduct/index.jsx";
-import CategoryTable from "./components/CategoryTable/index.jsx";
 import Category from "./pages/Category/index.jsx";
 import NewCategory from "./pages/NewCategory/index.jsx";
 import NewUser from "./pages/NewUser/index.js";
 import UpdateCategory from "./pages/UpdateCategory/index.jsx";
+import NewForProduct from "./pages/NewProduct/New.jsx";
+import NewProductV3 from "./pages/NewProduct/NewProductV3.jsx";
 
 function App() {
   console.log(orderColumns);
@@ -82,6 +83,40 @@ function App() {
               }
             />
             <Route
+              path="new"
+              element={
+                <ProtectedRoute>
+                  <NewProductV3 inputs={productInput} title="Add New Product" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="updateproduct"
+              element={
+                <ProtectedRoute>
+                  <NewProductV3 inputs={productInput} title="Update Product" />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          {/* <Route path="products">
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <Product columns={productColumn} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="newproduct"
+              element={
+                <ProtectedRoute>
+                  <NewProduct inputs={productInput} title="Add New Product" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="updateproduct"
               element={
                 <ProtectedRoute>
@@ -89,7 +124,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          </Route>
+          </Route> */}
           <Route path="orders">
             <Route
               index
@@ -103,7 +138,7 @@ function App() {
               path="new"
               element={
                 <ProtectedRoute>
-                  <New inputs={userInputs} title="Add New User" />
+                  <index inputs={userInputs} title="Add New User" />
                 </ProtectedRoute>
               }
             />

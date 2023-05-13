@@ -117,7 +117,7 @@ export const updateProduct = async (
     console.log(data);
     dispatch(updateStateSuccess(data));
     navigate("/products");
-    toast.success("Notifikasi telah dikirim!");
+    toast.success("success update product!");
     // successMessage("succes add product !");
   } catch (error) {
     dispatch(updateProductFailure());

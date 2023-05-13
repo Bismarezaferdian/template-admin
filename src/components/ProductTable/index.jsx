@@ -74,8 +74,8 @@ const ProductTable = ({ columns }) => {
         <DataGrid
           rows={products}
           columns={columns.concat(actionColummn)}
-          pageSize={9}
-          rowsPerPageOptions={[9]}
+          pageSize={15}
+          rowsPerPageOptions={[15]}
           checkboxSelection
           getRowId={(row) => row._id}
           rowSelection={false}

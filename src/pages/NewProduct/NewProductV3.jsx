@@ -6,42 +6,74 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./index.scss";
 import { fetchData } from "../../useFetch";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../../redux.js/apiCall";
-import { errorMessage, successMessage } from "../../utils/Toastify";
-import { ToastContainer } from "react-toastify";
+import { addProduct, updateProduct } from "../../redux.js/apiCall";
+import {
+  errorMessage,
+  infoMessage,
+  successMessage,
+  warningMessage,
+} from "../../utils/Toastify";
+import { toast, ToastContainer } from "react-toastify";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
-function NewProduct({ inputs, title }) {
+function NewProductV3({ inputs, title }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const product = location.state;
   const dispatch = useDispatch();
-  const { isFetch } = useSelector((state) => state.product);
+  const { isFetch, products } = useSelector((state) => state.product);
   //LOCAL STATE
   const [imgDetail, setImgDetail] = useState([]);
-  const [imgDisplay, setImgDisplay] = useState("");
+  const [imgDisplay, setImgDisplay] = useState();
   //send data base
   const [dataProduct, setDataProduct] = useState({
     title: "",
-    stock: "",
+    weight: "",
     price: "",
     desc: "",
   });
   const [categories, setCategories] = useState([]);
   //send databse
   const [dataCat, setDataCat] = useState([]);
-  const [newData, setNewData] = useState("");
   //send database
-  const [data, setData] = useState({
-    color: ["red"],
-    size: [],
+  const [tempVariant, setTempVariant] = useState({
+    color: "",
+    size: "",
+    stock: "",
   });
-
+  const [variant, setVariant] = useState([]);
   const [validate, setValidate] = useState(false);
-
-  // console.log(dataProduct);
-  const lowerCase = (string) => {
-    return string.toLowerCase();
-  };
+  const [id, setId] = useState();
+  console.log(variant);
+  useEffect(() => {
+    if (product?.id) {
+      const prod = products.find((item) => item._id === product?.id);
+      console.log(prod);
+      if (prod) {
+        setId(prod._id);
+        setVariant(prod.variant);
+        setDataCat(prod.categories.map((item) => item._id));
+        setDataProduct({
+          title: prod.title,
+          price: prod.price,
+          weight: prod.weight,
+          desc: prod.desc,
+        });
+      }
+    }
+  }, [product?.id, products]);
 
   useEffect(() => {
     const getCat = async () => {
@@ -52,6 +84,10 @@ function NewProduct({ inputs, title }) {
     };
     getCat();
   }, [location.pathname]);
+
+  const lowerCase = (string) => {
+    return string.toLowerCase();
+  };
 
   const handleChange = (e) =>
     setDataProduct((prev) => ({
@@ -68,34 +104,35 @@ function NewProduct({ inputs, title }) {
     }
   };
 
-  const handleChangeNewData = (e) =>
-    setNewData((prev) => ({
-      ...prev,
-      //e.target.id pakai squence brackets karna berisi variable
-      [e.target.id]: e.target.value,
+  const handleValueChange = (event) => {
+    const { id, value } = event.target;
+    setTempVariant((prevState) => ({
+      ...prevState,
+      [id]: value,
     }));
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-    const name = e.target.getAttribute("name");
-    // newData[name] mengunakan squence bracket karna name adalah variable
-    const newDatas = newData[name];
-    if (newDatas && !data[name].includes(newDatas)) {
-      // if (newDatas && !data[name].includes(newDatas)) {
-      setData((prevData) => ({
-        ...prevData,
-        [name]: [...prevData[name], newDatas],
-      }));
-    }
-    setNewData("");
   };
 
-  const handleDelete = (e, i) => {
-    const name = e.target.getAttribute("name");
-    console.log(name);
-    const datas = { ...data };
-    datas[name].splice(i, 1);
-    setData(datas);
+  const handleDelete = (e) => {
+    const datas = [...variant];
+    datas.splice(e, 1);
+    setVariant(datas);
+  };
+
+  const handleEdit = (item, i) => {
+    setTempVariant((prevState) => ({
+      ...prevState,
+      color: item.color,
+      size: item.size,
+      stock: item.stock,
+    }));
+    const datas = [...variant];
+    datas.splice(i, 1);
+    setVariant(datas);
+  };
+
+  const handleAdd = () => {
+    setVariant([...variant, tempVariant]);
+    setTempVariant((prev) => ({ ...prev, color: "", size: "", stock: "" }));
   };
 
   const deleteImg = (e, index) => {
@@ -113,77 +150,57 @@ function NewProduct({ inputs, title }) {
   const runValidate = () => {
     setValidate(true);
   };
-  console.log(dataProduct);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, description, stock, price } = dataProduct;
+    const { title, desc, weight, price } = dataProduct;
     if (
       !title ||
-      !description ||
-      !stock ||
+      !desc ||
+      !weight ||
       !price ||
       !imgDisplay ||
-      !imgDetail.length ||
-      !data.size.length ||
-      !data.color.length
+      !imgDetail.length
+      // !data.size.length ||
+      // !data.color.length
     ) {
       runValidate();
     }
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("desc", description);
-    formData.append("imgDisplay", imgDisplay);
+    formData.append("desc", desc);
+    if (imgDisplay) {
+      formData.append("imgDisplay", imgDisplay);
+    }
     for (let i = 0; i < imgDetail.length; i++) {
       formData.append("imgDetail", imgDetail[i]);
     }
     formData.append("categories", dataCat);
-    formData.append("size", data.size);
-    formData.append("color", data.color);
-    formData.append("stock", stock);
+    formData.append("variant", JSON.stringify(variant));
+    formData.append("weight", weight);
     formData.append("price", price);
     // formData.append("title", "title");
-
-    console.log(formData);
-    await addProduct(
-      dispatch,
-      formData,
-      navigate,
-      successMessage,
-      errorMessage
-    );
+    product?.id
+      ? await updateProduct(
+          dispatch,
+          id,
+          formData,
+          navigate,
+          toast,
+          errorMessage
+        )
+      : await addProduct(
+          dispatch,
+          formData,
+          navigate,
+          successMessage,
+          errorMessage
+        );
   };
 
   //old version
-
-  //   const addSize = (e) => {
-  //     console.log(e.target.getAttribute("name"));
-
-  //     e.preventDefault();
-  //     size.includes(newSize) ? setSize(size) : setSize([...size, newSize]);
-  //     setNewSize("");
-  //   };
-  //   const addColor = (e) => {
-  //     e.preventDefault();
-  //     color.includes(newColor) ? setColor(color) : setColor([...color, newColor]);
-  //     setNewColor("");
-  //   };
-
-  //   const handleDeleteSize = (i) => {
-  //     const newSize = [...size];
-  //     newSize.splice(i, 1);
-  //     setSize(newSize);
-  //   };
-  //   const handleDeleteColor = (i) => {
-  //     console.log("delete");
-  //     const newColor = [...color];
-  //     newColor.splice(i, 1);
-  //     setColor(newColor);
-  //   };
-  //   console.log(`color :${color} `);
-  //   console.log(`newColor :${newColor} `);
 
   //HANDLE IMAGE
   return (
@@ -268,7 +285,6 @@ function NewProduct({ inputs, title }) {
                   id="files"
                   multiple
                   accept=".jpg,image/*,.png,.jpeg"
-                  // onChange={(e) => console.log(e.target.files)}
                   onChange={(e) => setImgDetail(e.target.files)}
                   style={{ display: "none" }}
                 />
@@ -297,11 +313,12 @@ function NewProduct({ inputs, title }) {
               </div>
 
               <div className="formInput1">
-                <label>Desc</label>
+                <label>Deskripsi</label>
                 <textarea
                   rows="4"
                   cols="80"
-                  id="description"
+                  id="desc"
+                  value={dataProduct.desc || ""}
                   // value={
                   //   productUpdate
                   //     ? productUpdate.desc
@@ -309,87 +326,126 @@ function NewProduct({ inputs, title }) {
                   // }
                   onChange={(e) => handleChange(e)}
                 />
-                {!dataProduct.description && validate && (
+                {!dataProduct.desc && validate && (
                   <span>tidak boleh kosong </span>
                 )}
               </div>
-
-              {/* size */}
-              <div className="formInput1">
-                <label>Size :</label>
-                {data.size.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
-                    <div
-                      name="size"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="size"
-                    type="text"
-                    value={newData.size || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewSize(e.target.value)}
-                  />
-                  <div
-                    name="size"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
+              <div>
+                <Accordion sx={{ width: "400px" }}>
+                  <AccordionSummary
+                    expandIcon={<GridExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
-                    Add
-                  </div>
-                </div>
-                {!data.size.length && validate && (
-                  <span>size belum ditambahkan </span>
+                    <Typography>Add Variants</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div>
+                      <Table aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Color</TableCell>
+                            <TableCell>Size</TableCell>
+                            <TableCell>Stock</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {variant?.map((item, i) => (
+                            <TableRow
+                              key={i}
+                              // sx={{
+                              //   "&:last-child td, &:last-child th": {
+                              //     border: 1,
+                              //   },
+                              // }}
+                            >
+                              <TableCell>{item.color}</TableCell>
+                              <TableCell>{item.size}</TableCell>
+                              <TableCell>{item.stock}</TableCell>
+                              <TableCell>
+                                <div
+                                  name="color"
+                                  className="btn"
+                                  onClick={() => handleEdit(item, i)}
+                                >
+                                  edit
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div
+                                  name="color"
+                                  className="btn"
+                                  onClick={() => handleDelete(i)}
+                                >
+                                  cancel
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    {Object.keys(tempVariant).map((item, i) => (
+                      <div className="formInput1" key={i}>
+                        <label>{item} :</label>
+
+                        <div
+                          className="inputWrapp"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <input
+                            id={item}
+                            name={item}
+                            type="text"
+                            value={tempVariant[item] || ""}
+                            placeholder={item}
+                            onChange={(e) => handleValueChange(e)}
+                          />
+                        </div>
+                        {!variant.length && validate && (
+                          <span>{item} belum ditambahkan </span>
+                        )}
+                      </div>
+                    ))}
+
+                    <div
+                      className="inputWrapp"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <div
+                        id="size"
+                        className="buttonColor"
+                        onClick={(e) => handleAdd(e)}
+                        style={{
+                          marginTop: "10px",
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        Add
+                      </div>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+                {!variant.length && validate && (
+                  <span>variant belum ditambahkan </span>
                 )}
               </div>
-
-              {/* color */}
-              <div className="formInput1">
-                <label>Color :</label>
-                {data.color.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
-                    <div
-                      name="color"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="color"
-                    type="text"
-                    value={newData.color || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewColor(e.target.value)}
-                  />
-                  <div
-                    name="color"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!data.color.length && validate && (
-                  <span>color belum ditambahkan </span>
-                )}
-              </div>
-
               {/* categorie */}
               <div className="formInput1">
                 <div className="categorieWrapp"></div>
-                <label>Pilih Categorie :</label>
+                <label>Pilih Categorie v3 :</label>
                 <div className="checkbox">
                   {categories.map((cat, i) => (
                     <label key={i}>
@@ -409,7 +465,7 @@ function NewProduct({ inputs, title }) {
                 )}
               </div>
               <button disabled={isFetch} onClick={(e) => handleSubmit(e)}>
-                Add Data
+                {product?.id ? "update" : "Add Data"}
               </button>
             </form>
           </div>
@@ -419,4 +475,4 @@ function NewProduct({ inputs, title }) {
   );
 }
 
-export default NewProduct;
+export default NewProductV3;

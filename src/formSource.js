@@ -56,8 +56,8 @@ export const productInput = [
     placeholder: "price",
   },
   {
-    id: "stock",
-    label: "stock",
+    id: "weight",
+    label: "weight(gram)",
     type: "number",
     placeholder: "add qty stock",
   },

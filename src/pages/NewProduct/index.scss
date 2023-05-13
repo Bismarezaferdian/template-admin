@@ -89,7 +89,7 @@
 
           .formInput1 {
             width: 100%;
-            // padding: 10px;
+            padding: 10px;
 
             label {
               display: flex;
@@ -122,8 +122,18 @@
             }
 
             .inputWrapp {
+              color: red;
               display: flex;
               align-items: center;
+              .buttonColor {
+                background-color: teal;
+                font-size: 14px;
+                padding: 8px;
+                font-weight: bold;
+                margin-left: 10px;
+                color: white;
+                cursor: pointer;
+              }
             }
 
             input {
@@ -155,6 +165,23 @@
               background-color: grey;
             }
           }
+        }
+        .buttonColor {
+          background-color: teal;
+          font-size: 14px;
+          padding: 8px;
+          font-weight: bold;
+          margin-left: 10px;
+          color: white;
+          cursor: pointer;
+        }
+        .btn {
+          color: red;
+          cursor: pointer;
+        }
+        span {
+          color: red;
+          font-size: 10px;
         }
       }
     }

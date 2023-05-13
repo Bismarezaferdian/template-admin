@@ -6,99 +6,50 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./index.scss";
 import { fetchData } from "../../useFetch";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, updateProduct } from "../../redux.js/apiCall";
+import { addProduct } from "../../redux.js/apiCall";
 import {
   errorMessage,
   infoMessage,
   successMessage,
+  warningMessage,
 } from "../../utils/Toastify";
 import { toast, ToastContainer } from "react-toastify";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
-function UpdateProduct({ inputs, title }) {
+function NewForProduct({ inputs, title }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const product = location.state;
   const dispatch = useDispatch();
-  const { products, isFetch } = useSelector((state) => state.product);
-  // const [productUpdate, setProductUpdate] = useState(undefined);
-  // console.log(productUpdate);
+  const { isFetch } = useSelector((state) => state.product);
   //LOCAL STATE
   const [imgDetail, setImgDetail] = useState([]);
   const [imgDisplay, setImgDisplay] = useState("");
   //send data base
   const [dataProduct, setDataProduct] = useState({
     title: "",
-    price: "",
     stock: "",
-    description: "",
+    price: "",
+    desc: "",
   });
-
   const [categories, setCategories] = useState([]);
   //send databse
   const [dataCat, setDataCat] = useState([]);
-  // console.log(dataProduct);
-  // const [newData, setNewData] = useState("");
-  // //send database
-  // const [data, setData] = useState({
-  //   color: ["red"],
-  //   size: [],
-  // });
+  //send database
   const [tempValue, setTempValue] = useState({
     color: {},
     size: {},
   });
   const [newColor, setNewColor] = useState([]);
   const [newSize, setNewSize] = useState([]);
-  const [id, setId] = useState();
 
   const [validate, setValidate] = useState(false);
-
-  const lowerCase = (string) => {
-    return string.toLowerCase();
-  };
-
-  // useEffect(() => {
-  //   if (product?.id) {
-  //     const prod = products.find((products) => products._id === product.id);
-  //     setId(prod._id);
-  //     console.log(prod);
-  //     // setProductUpdate(prod);
-  //     // setTempValue((prev) => ({
-  //     //   ...prev,
-  //     //   size: [...prod.size],
-  //     //   color: [...prod.color],
-  //     // }));
-  //     setNewColor(prod.color);
-  //     setNewSize(prod.size);
-  //     // setImgDetail((prev) => [...prev, prod.imgDetail]);
-
-  //     const checked = [];
-  //     prod?.categories?.map((item) => checked.push(item._id));
-  //     setDataCat(checked);
-  //     setDataProduct((prev) => ({
-  //       ...prev,
-  //       title: prod.title,
-  //       price: prod.price,
-  //       stock: prod.stock,
-  //       description: prod.desc,
-  //     }));
-  //   }
-  // }, [product?.id, products]);
-  useEffect(() => {
-    const prod = products.find((item) => item._id === product?.id);
-    if (prod) {
-      setId(prod._id);
-      setNewColor(prod.color);
-      setNewSize(prod.size);
-      setDataCat(prod.categories.map((item) => item._id));
-      setDataProduct({
-        title: prod.title,
-        price: prod.price,
-        stock: prod.stock,
-        description: prod.desc,
-      });
-    }
-  }, [product?.id, products]);
 
   useEffect(() => {
     const getCat = async () => {
@@ -109,6 +60,10 @@ function UpdateProduct({ inputs, title }) {
     };
     getCat();
   }, [location.pathname]);
+
+  const lowerCase = (string) => {
+    return string.toLowerCase();
+  };
 
   const handleChange = (e) =>
     setDataProduct((prev) => ({
@@ -125,12 +80,11 @@ function UpdateProduct({ inputs, title }) {
     }
   };
 
-  // const handleChangeNewData = (e) =>
-  //   setNewData((prev) => ({
-  //     ...prev,
-  //     //e.target.id pakai squence brackets karna berisi variable
-  //     [e.target.id]: e.target.value,
-  //   }));
+  // const colors = [
+  //   { name: "Red", stock: 10 },
+  //   { name: "Green", stock: 5 },
+  //   { name: "Blue", stock: 20 },
+  // ];
 
   const handleValueChange = (event) => {
     const { id, name, value } = event.target;
@@ -143,20 +97,19 @@ function UpdateProduct({ inputs, title }) {
     }));
   };
 
-  // const handleAdd = (e) => {
-  //   e.preventDefault();
-  //   const name = e.target.getAttribute("name");
-  //   // newData[name] mengunakan squence bracket karna name adalah variable
-  //   const newDatas = newData[name];
-  //   if (newDatas && !data[name].includes(newDatas)) {
-  //     // if (newDatas && !data[name].includes(newDatas)) {
-  //     setData((prevData) => ({
-  //       ...prevData,
-  //       [name]: [...prevData[name], newDatas],
-  //     }));
-  //   }
-  //   setNewData("");
-  // };
+  const handleDelete = (e, i) => {
+    const name = e.target.getAttribute("name");
+    if (name === "color") {
+      const datas = [...newColor];
+      datas.splice(i, 1);
+      setNewColor(datas);
+    } else if (name === "size") {
+      const datas = [...newSize];
+      datas.splice(i, 1);
+      setNewSize(datas);
+    }
+  };
+
   const handleAdd = (e) => {
     const name = e.target.id;
     console.log(name);
@@ -188,30 +141,25 @@ function UpdateProduct({ inputs, title }) {
     }
   };
 
-  // const handleDelete = (e, i) => {
-  //   const name = e.target.getAttribute("name");
-  //   const datas = { ...data };
-  //   datas[name].splice(i, 1);
-  //   setData(datas);
-  // };
-  const handleDelete = (e, i) => {
-    const name = e.target.getAttribute("name");
-    if (name === "color") {
-      const datas = [...newColor];
-      datas.splice(i, 1);
-      setNewColor(datas);
-    } else if (name === "size") {
-      const datas = [...newSize];
-      datas.splice(i, 1);
-      setNewSize(datas);
-    }
+  const deleteImg = (e, index) => {
+    e.preventDefault();
+    setImgDetail((prevImgDetail) => {
+      //imgDetail di jadikan array
+      const arrPrevImgDetail = Array.from(prevImgDetail);
+      const newArrPrevImgDetail = arrPrevImgDetail.filter(
+        (_, i) => i !== index
+      );
+      return newArrPrevImgDetail;
+    });
   };
 
   const runValidate = () => {
     setValidate(true);
   };
 
-  const handleUpdate = async (e) => {
+  console.log(newColor, newSize);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { title, description, stock, price } = dataProduct;
@@ -219,37 +167,44 @@ function UpdateProduct({ inputs, title }) {
       !title ||
       !description ||
       !stock ||
-      !price
+      !price ||
+      !imgDisplay ||
+      !imgDetail.length
       // !data.size.length ||
       // !data.color.length
     ) {
       runValidate();
-      return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("desc", description);
-    if (imgDetail) {
-      for (let i = 0; i < imgDetail.length; i++) {
-        formData.append("imgDetail", imgDetail[i]);
-      }
-    }
-    if (imgDisplay) {
-      formData.append("imgDisplay", imgDisplay);
+    formData.append("imgDisplay", imgDisplay);
+    for (let i = 0; i < imgDetail.length; i++) {
+      formData.append("imgDetail", imgDetail[i]);
     }
     formData.append("categories", dataCat);
     formData.append("size", JSON.stringify(newSize));
     formData.append("color", JSON.stringify(newColor));
     formData.append("stock", stock);
     formData.append("price", price);
+    // formData.append("title", "title");
 
-    await updateProduct(dispatch, id, formData, navigate, toast, errorMessage);
+    await addProduct(
+      dispatch,
+      formData,
+      navigate,
+      successMessage,
+      errorMessage
+    );
   };
 
+  //old version
+
+  //HANDLE IMAGE
   return (
     <div className="new">
-      {/* <ToastContainer /> */}
+      <ToastContainer />
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -299,16 +254,24 @@ function UpdateProduct({ inputs, title }) {
                   onChange={(e) => setImgDisplay(e.target.files[0])}
                   style={{ display: "none" }}
                 />
-                {/* {!imgDisplay && validate && <span>tidak boleh kosong </span>} */}
+                {!imgDisplay && validate && <span>tidak boleh kosong </span>}
                 {imgDisplay && (
-                  <img
-                    src={
-                      imgDisplay
-                        ? URL.createObjectURL(imgDisplay)
-                        : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-                    }
-                    alt=""
-                  />
+                  <div>
+                    <img
+                      src={
+                        imgDisplay
+                          ? URL.createObjectURL(imgDisplay)
+                          : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                      }
+                      alt=""
+                    />
+                    <div
+                      className="iconClose"
+                      onClick={() => setImgDisplay("")}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </div>
+                  </div>
                 )}
               </div>
               <div className="formInput">
@@ -321,34 +284,44 @@ function UpdateProduct({ inputs, title }) {
                   id="files"
                   multiple
                   accept=".jpg,image/*,.png,.jpeg"
-                  // onChange={(e) => console.log(e.target.files)}
                   onChange={(e) => setImgDetail(e.target.files)}
                   style={{ display: "none" }}
                 />
-                {/* {!imgDetail.length && validate && (
+                {!imgDetail.length && validate && (
                   <span>tidak boleh kosong </span>
-                )} */}
+                )}
                 {imgDetail &&
                   Array.from(imgDetail).map((item, index) => (
-                    <img
-                      key={index}
-                      src={
-                        item
-                          ? URL.createObjectURL(item)
-                          : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-                      }
-                      alt=""
-                    />
+                    <div className="imgWrapp" key={index}>
+                      <img
+                        src={
+                          item
+                            ? URL.createObjectURL(item)
+                            : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                        }
+                        alt=""
+                      />
+                      <div
+                        className="iconClose"
+                        onClick={(e) => deleteImg(e, index)}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </div>
+                    </div>
                   ))}
               </div>
 
               <div className="formInput1">
-                <label>Deskripsi</label>
+                <label>Desc</label>
                 <textarea
                   rows="4"
                   cols="80"
                   id="description"
-                  value={dataProduct.description}
+                  // value={
+                  //   productUpdate
+                  //     ? productUpdate.desc
+                  //     : setDataProduct.description
+                  // }
                   onChange={(e) => handleChange(e)}
                 />
                 {!dataProduct.description && validate && (
@@ -478,78 +451,6 @@ function UpdateProduct({ inputs, title }) {
                 )}
               </div>
 
-              {/* size */}
-              {/* <div className="formInput1">
-                <label>Size :</label>
-                {data.size?.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
-                    <div
-                      name="size"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="size"
-                    type="text"
-                    value={newData.size || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewSize(e.target.value)}
-                  />
-                  <div
-                    name="size"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!data.size.length && validate && (
-                  <span>size belum ditambahkan </span>
-                )}
-              </div> */}
-
-              {/* color */}
-              {/* <div className="formInput1">
-                <label>Color :</label>
-                {data.color?.map((item, i) => (
-                  <div className="sizeWrapp" key={i}>
-                    <p>{item.toUpperCase()}</p>
-                    <div
-                      name="color"
-                      className="btn"
-                      onClick={(e) => handleDelete(e, i)}
-                    >
-                      cancel
-                    </div>
-                  </div>
-                ))}
-                <div className="inputWrapp">
-                  <input
-                    id="color"
-                    type="text"
-                    value={newData.color || ""}
-                    onChange={(e) => handleChangeNewData(e)}
-                    // onChange={(e) => setNewColor(e.target.value)}
-                  />
-                  <div
-                    name="color"
-                    className="buttonColor"
-                    onClick={(e) => handleAdd(e)}
-                  >
-                    Add
-                  </div>
-                </div>
-                {!data.color.length && validate && (
-                  <span>color belum ditambahkan </span>
-                )}
-              </div> */}
-
               {/* categorie */}
               <div className="formInput1">
                 <div className="categorieWrapp"></div>
@@ -572,8 +473,8 @@ function UpdateProduct({ inputs, title }) {
                   <span>categorie belum di pilih </span>
                 )}
               </div>
-              <button disabled={isFetch} onClick={(e) => handleUpdate(e)}>
-                Update
+              <button disabled={isFetch} onClick={(e) => handleSubmit(e)}>
+                Add Data
               </button>
             </form>
           </div>
@@ -583,4 +484,4 @@ function UpdateProduct({ inputs, title }) {
   );
 }
 
-export default UpdateProduct;
+export default NewForProduct;

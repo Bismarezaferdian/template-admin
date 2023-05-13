@@ -20,7 +20,7 @@ const CategoryTable = () => {
   const { categories, isFetch, error } = useSelector(
     (state) => state.categorie
   );
-
+  console.log(categories);
   useEffect(() => {
     getCategory(dispatch);
   }, [dispatch]);
@@ -62,7 +62,7 @@ const CategoryTable = () => {
                   {row._id}
                 </TableCell>
                 {/* <TableCell>{row.name}</TableCell> */}
-                <TableCell>{row.name.toUpperCase()}</TableCell>
+                <TableCell>{row.name}</TableCell>
                 <TableCell>
                   <div className="cellAction">
                     <button

@@ -94,27 +94,37 @@ export const productColumn = [
       );
     },
   },
-  // {
-  //   field: "imgDetail",
-  //   headerName: "Image Detail",
-  //   width: 400,
-  //   renderCell: (params) => {
-  //     console.log(params);
-  //     return params.row.imgDetail.map((item) => (
-  //       <div className="cellWithImg">
-  //         <img
-  //           className="cellImg"
-  //           src={
-  //             // "https://i.ibb.co/MBtjqXQ/no-avatar.gif"
-  //             item.imgUrl
-  //           }
-  //           alt="avatar"
-  //         />
-  //         {params.row.userName}
-  //       </div>
-  //     ));
-  //   },
-  // },
+  {
+    field: "colors",
+    headerName: "colors",
+    width: 0,
+    renderCell: (params) => {
+      return params.row.variant.map(
+        (item) => `${String(item.color).toUpperCase()},`
+      );
+    },
+  },
+  {
+    field: "sizes",
+    headerName: "sizes",
+    width: 0,
+    renderCell: (params) => {
+      return params.row.variant.map(
+        (item) => `${String(item.size).toUpperCase()},`
+      );
+    },
+  },
+  {
+    field: "weight",
+    headerName: "weight",
+    width: 0,
+    renderCell: (params) => {
+      return params.row.variant.map(
+        (item) => `${String(item.stock).toUpperCase()},`
+      );
+    },
+  },
+
   {
     field: "categories",
     type: "array",
@@ -124,8 +134,6 @@ export const productColumn = [
       return params.row.categories?.map((item) => item.name);
     },
   },
-  { field: "size", type: "array", headerName: "Size", width: 130 },
-  { field: "color", type: "array", headerName: "Color", width: 130 },
   { field: "price", type: "number", headerName: "Price", width: 130 },
 ];
 
